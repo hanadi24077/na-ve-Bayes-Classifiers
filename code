@@ -1,0 +1,168 @@
+#hanadi abdulrahem alsulami - KAU - JED - KSA
+import numpy as np
+import pandas as pd
+import matplotlib
+import matplotlib.pyplot as plt # for ploting data
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+import seaborn as sns
+heart_dataset=pd.read_csv('heart_failure_clinical_records_dataset.csv')
+heart_dataset.info()
+
+#split the dataset into training and testing
+
+training, testing = train_test_split(heart_dataset, test_size=0.3,random_state=42)
+
+#Extrat y train and y test from the training and testing dataset
+
+ytrain=training['DEATH_EVENT']
+ytest=testing['DEATH_EVENT']
+
+#//////////////////////////////////////////////////////////////////////
+# Number of DEATH
+n_death = training['DEATH_EVENT'][training['DEATH_EVENT'] == 1].count()
+
+# Number of non death
+n_non_death = training['DEATH_EVENT'][training['DEATH_EVENT'] == 0].count()
+
+# Total rows
+total = training['DEATH_EVENT'].count()
+
+# Number of death divided by the total rows
+P_death = n_death/total
+
+# Number of non death divided by the total rows
+P_non_death = n_non_death/total
+#///////////////////////////////////////////////////////////////////////
+
+data_means = training.groupby('DEATH_EVENT').mean()
+
+print('\n #the mean ------------------------ \n ',data_means)
+
+# Group the data by DEATH_EVENT and calculate the variance of each feature
+data_variance = training.groupby('DEATH_EVENT').var()
+
+print('\n #the variance -------------------- \n', data_variance)
+
+# Means for death
+death_age_mean = data_means['age'][data_variance.index == 1].values[0]
+death_creatinine_phosphokinase_mean = data_means['creatinine_phosphokinase'][data_variance.index == 1].values[0]
+death_anaemia_mean = data_means['anaemia'][data_variance.index == 1].values[0]
+death_diabetes_mean = data_means['diabetes'][data_variance.index == 1].values[0]
+death_ejection_fraction_mean = data_means['ejection_fraction'][data_variance.index == 1].values[0]
+death_high_blood_pressure_mean = data_means['high_blood_pressure'][data_variance.index == 1].values[0]
+death_platelets_mean = data_means['platelets'][data_variance.index == 1].values[0]
+death_serum_creatinine_mean = data_means['serum_creatinine'][data_variance.index == 1].values[0]
+death_sex_mean = data_means['sex'][data_variance.index == 1].values[0]
+death_smoking_mean = data_means['smoking'][data_variance.index == 1].values[0]
+death_time_mean = data_means['time'][data_variance.index == 1].values[0]
+
+# Variance for death
+
+death_age_Variance = data_variance['age'][data_variance.index == 1].values[0]
+death_creatinine_phosphokinase_Variance = data_variance['creatinine_phosphokinase'][data_variance.index == 1].values[0]
+death_anaemia_Variance = data_variance['anaemia'][data_variance.index == 1].values[0]
+death_diabetes_Variance = data_variance['diabetes'][data_variance.index == 1].values[0]
+death_ejection_fraction_Variance = data_variance['ejection_fraction'][data_variance.index == 1].values[0]
+death_high_blood_pressure_Variance = data_variance['high_blood_pressure'][data_variance.index == 1].values[0]
+death_platelets_Variance = data_variance['platelets'][data_variance.index == 1].values[0]
+death_serum_creatinine_Variance= data_variance['serum_creatinine'][data_variance.index == 1].values[0]
+death_sex_Variance = data_variance['sex'][data_variance.index == 1].values[0]
+death_smoking_Variance = data_variance['smoking'][data_variance.index == 1].values[0]
+death_time_Variance= data_variance['time'][data_variance.index == 1].values[0]
+
+# Means for  non death
+non_death_age_mean = data_means['age'][data_variance.index == 0].values[0]
+non_death_creatinine_phosphokinase_mean = data_means['creatinine_phosphokinase'][data_variance.index == 0].values[0]
+non_death_anaemia_mean = data_means['anaemia'][data_variance.index == 0].values[0]
+non_death_diabetes_mean = data_means['diabetes'][data_variance.index == 0].values[0]
+non_death_ejection_fraction_mean = data_means['ejection_fraction'][data_variance.index == 0].values[0]
+non_death_high_blood_pressure_mean = data_means['high_blood_pressure'][data_variance.index == 0].values[0]
+non_death_platelets_mean = data_means['platelets'][data_variance.index == 0].values[0]
+non_death_serum_creatinine_mean = data_means['serum_creatinine'][data_variance.index == 0].values[0]
+non_death_sex_mean = data_means['sex'][data_variance.index == 0].values[0]
+non_death_smoking_mean = data_means['smoking'][data_variance.index == 0].values[0]
+non_death_time_mean = data_means['time'][data_variance.index == 0].values[0]
+
+#Variance for non death
+
+non_death_age_Variance = data_variance['age'][data_variance.index == 0].values[0]
+non_death_creatinine_phosphokinase_Variance = data_variance['creatinine_phosphokinase'][data_variance.index == 0].values[0]
+non_death_anaemia_Variance = data_variance['anaemia'][data_variance.index == 0].values[0]
+non_death_diabetes_Variance = data_variance['diabetes'][data_variance.index == 0].values[0]
+non_death_ejection_fraction_Variance = data_variance['ejection_fraction'][data_variance.index == 0].values[0]
+non_death_high_blood_pressure_Variance = data_variance['high_blood_pressure'][data_variance.index == 0].values[0]
+non_death_platelets_Variance = data_variance['platelets'][data_variance.index == 0].values[0]
+non_death_serum_creatinine_Variance= data_variance['serum_creatinine'][data_variance.index == 0].values[0]
+non_death_sex_Variance = data_variance['sex'][data_variance.index == 0].values[0]
+non_death_smoking_Variance = data_variance['smoking'][data_variance.index == 0].values[0]
+non_death_time_Variance= data_variance['time'][data_variance.index == 0].values[0]
+
+
+# Create a function that calculates p(x | y):
+def p_x_given_y(x, mean_y, variance_y):
+
+    # Input the arguments into a probability density function
+    p = 1/(np.sqrt(2*np.pi*variance_y)) * np.exp((-(x - mean_y)**2)/(2*variance_y))
+    
+    # return p
+    return p
+
+df = pd.DataFrame(columns=['result_death','result_non_death','ones','zeros','y_prime'])
+df['result_death'] = (P_death * \
+p_x_given_y(testing['age'].values, death_age_mean, death_age_Variance) * \
+p_x_given_y(testing['creatinine_phosphokinase'], death_creatinine_phosphokinase_mean, death_creatinine_phosphokinase_Variance) * \
+p_x_given_y(testing['anaemia'], death_anaemia_mean, death_anaemia_Variance) * \
+p_x_given_y(testing['diabetes'], death_diabetes_mean, death_diabetes_Variance) * \
+p_x_given_y(testing['ejection_fraction'], death_ejection_fraction_mean, death_ejection_fraction_Variance) * \
+p_x_given_y(testing['high_blood_pressure'], death_high_blood_pressure_mean, death_high_blood_pressure_Variance) * \
+p_x_given_y(testing['platelets'], death_platelets_mean, death_platelets_Variance) * \
+p_x_given_y(testing['serum_creatinine'], death_serum_creatinine_mean, death_serum_creatinine_Variance) * \
+p_x_given_y(testing['sex'], death_sex_mean, death_sex_Variance) * \
+p_x_given_y(testing['smoking'], death_smoking_mean, death_smoking_Variance) * \
+p_x_given_y(testing['time'], death_time_mean, death_time_Variance))
+
+
+print ('result death',df['result_death'])
+
+
+df['result_non_death']=(P_non_death * \
+p_x_given_y(testing['age'], non_death_age_mean, non_death_age_Variance) * \
+p_x_given_y(testing['creatinine_phosphokinase'], non_death_creatinine_phosphokinase_mean, non_death_creatinine_phosphokinase_Variance) * \
+p_x_given_y(testing['anaemia'], non_death_anaemia_mean, non_death_anaemia_Variance) * \
+p_x_given_y(testing['diabetes'], non_death_diabetes_mean, non_death_diabetes_Variance) * \
+p_x_given_y(testing['ejection_fraction'], non_death_ejection_fraction_mean, non_death_ejection_fraction_Variance) * \
+p_x_given_y(testing['high_blood_pressure'], non_death_high_blood_pressure_mean, non_death_high_blood_pressure_Variance) * \
+p_x_given_y(testing['platelets'], non_death_platelets_mean, non_death_platelets_Variance) * \
+p_x_given_y(testing['serum_creatinine'], non_death_serum_creatinine_mean, non_death_serum_creatinine_Variance) * \
+p_x_given_y(testing['sex'], non_death_sex_mean, non_death_sex_Variance) * \
+p_x_given_y(testing['smoking'], non_death_smoking_mean, non_death_smoking_Variance) * \
+p_x_given_y(testing['time'], non_death_time_mean, non_death_time_Variance))
+
+print ('result of non death ',df['result_non_death'])
+df['zeros']= df['zeros'].fillna(0)
+df['ones']= df['ones'].fillna(1)
+
+
+
+df['y_prime'] = np.where(df['result_death'] > df['result_non_death'], df['ones'], df['zeros'])
+
+
+print(df)
+
+#calculating the accurecy percision and recall
+
+print ("accurcy ",accuracy_score(ytest,df['y_prime'])*100)
+
+precision = precision_score(ytest, df['y_prime'])
+print('Precision: %f' % precision)
+
+recall = recall_score(ytest, df['y_prime'])
+print('Recall: %f' % recall)
+
+#plotting the data
+
+
+
+sns.pairplot(heart_dataset, hue="DEATH_EVENT")
+plt.show()
